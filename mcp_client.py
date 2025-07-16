@@ -58,12 +58,20 @@ class MCPClient:
         )
 
     async def list_prompts(self) -> list[types.Prompt]:
-        # TODO: Return a list of prompts defined by the MCP server
-        return []
+        result = await self.session().list_prompts()
+        if result is None:
+            raise RuntimeError(
+                "Failed to retrieve prompts from the MCP server."
+            )
+        return result.prompts
 
     async def get_prompt(self, prompt_name, args: dict[str, str]):
-        # TODO: Get a particular prompt defined by the MCP server
-        return []
+        result = await self.session().get_prompt(prompt_name, args)
+        if result is None:
+            raise RuntimeError(
+                f"Failed to retrieve prompt '{prompt_name}' from the MCP server."
+            )
+        return result.messages
 
     async def read_resource(self, uri: str) -> Any:
         result = await self.session().read_resource(AnyUrl(uri))
