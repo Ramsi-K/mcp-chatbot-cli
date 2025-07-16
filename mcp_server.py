@@ -93,17 +93,53 @@ def format_doc(
     doc_id: str = Field(description="ID of the document to format"),
 ) -> list[base.Message]:
     prompt = f"""
-            Your goal is to reformat a document to be written with markdown syntax.
+            You are a document conversion specialist tasked with rewriting documents in Markdown format. Your goal is to take the content of a given document and convert it into well-structured Markdown, preserving the original meaning and enhancing readability.
 
-            The id of the document you need to reformat is:
-            <document_id>
-            {doc_id}
-            </document_id>
+            Here is the identifier of the document you need to convert:
+            <document id>
+            {{doc_id}}
+            </document id>
 
-            Add in headers, bullet points, tables, etc as necessary. Feel free to add in structure.
-            Use the 'edit_document' tool to edit the document. After the document has been reformatted...
-            
-            """
+            Instructions:
+            1. Retrieve the content of the document associated with the given document_id.
+            2. Analyze the structure and content of the document.
+            3. Convert the document to Markdown format, following these guidelines:
+            - Use appropriate header levels (# for main titles, ## for subtitles, etc.)
+            - Properly format lists (both ordered and unordered)
+            - Use emphasis (*italic* or **bold**) where appropriate
+            - Add links and images using Markdown syntax if present in the original document
+            - Preserve any special formatting or structure that's important to the document's meaning
+
+            Before providing the final Markdown output, in <document analysis> tags:
+            - Identify the main sections and subsections of the document
+            - Count the number of sections and subsections to ensure proper nesting of headers
+
+            This will help ensure a thorough and well-organized conversion.
+
+            After your analysis, present the converted document in Markdown format. Use triple backticks (```) to denote the beginning and end of the Markdown content.
+
+            Example output structure:
+            <document analysis>
+            <Your analysis of the document structure and conversion plan>
+            </document analysis>
+
+            ```markdown
+            # Document Title
+
+            ## Section 1
+            Content of section 1...
+
+            ## Section 2
+            Content of section 2...
+
+            - List item 1
+            - List item 2
+
+            [Link text](https://example.com)  
+            ![Image description](image-url.jpg)
+            ```
+            Please proceed with your analysis and conversion of the document.
+        """
 
     return [base.UserMessage(prompt)]
 
