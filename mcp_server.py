@@ -144,7 +144,59 @@ def format_doc(
     return [base.UserMessage(prompt)]
 
 
-# TODO: Write a prompt to summarize a doc
+@mcp.prompt(
+    name="summarize",
+    description="Summarizes the contents of a document.",
+)
+def summarize_doc(
+    doc_id: str = Field(description="ID of the document to summarize"),
+) -> list[base.Message]:
+    prompt = f"""
+            You are a professional document analyst and summarization expert. Your task is to read the document associated with the given identifier and produce a clear, structured summary that captures the core ideas and major takeaways.
+
+            Here is the identifier of the document you need to summarize:
+            <document id>
+            {doc_id}
+            </document id>
+
+            Instructions:
+            1. Retrieve the content of the document using the provided document_id.
+            2. Read and understand the structure, tone, and purpose of the document.
+            3. Create a summary that highlights the key points, sections, and arguments in your own words, while preserving the original intent.
+
+            Before presenting the summary, include a breakdown in <document structure> tags:
+            - List the main sections of the document
+            - For each section, briefly state its purpose or focus
+            - Include a section and subsection count to confirm document complexity
+
+            Then provide the actual summary inside <document summary> tags.
+            - Keep the tone neutral and informative
+            - Use bullet points or paragraphs based on the original format
+            - Focus on clarity and readability
+            - Avoid copying full sentences unless absolutely necessary
+
+            Example output structure:
+            <document structure>
+            - Section 1: Introduction - sets context for the topic
+            - Section 2: Analysis - presents main arguments and supporting data
+            - Section 3: Conclusion - summarizes insights and implications
+
+            Sections: 3
+            Subsections: 5
+            </document structure>
+
+            <document summary>
+            - This document discusses...
+            - It identifies three major challenges...
+            - The author concludes by recommending...
+
+            (etc.)
+            </document summary>
+
+            Please proceed with your document analysis and structured summary.
+        """
+
+    return [base.UserMessage(prompt)]
 
 
 if __name__ == "__main__":
